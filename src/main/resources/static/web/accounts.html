@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -11,14 +11,12 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Accounts</title>
 </head>
+<header>
+
+</header>
 
 <body>
-    <style>
-        [v-cloak] {
-            display: none;
-        }
-    </style>
-    <div id="app" v-cloak>
+    <div id="app">
         <div class="toast-container position-absolute p-3 top-0 end-0" id="toastPlacement">
             <div id="danger-toast" data-bs-delay="2000" class="toast align-items-center text-white bg-danger border-0"
                 role="alert" aria-live="assertive" aria-atomic="true">
@@ -84,13 +82,13 @@
                             <h2 class="display-6 subtitle">Accounts</h2>
                         </div>
                         <div class="row mx-2">
-                            <div v-for="{id, number, date, balance} in clientInfo.accounts"
+                            <div v-for="{id, number, creationDate, balance} in clientInfo.accountsDTO"
                                 class="col-12 col-md-4 mt-2 ">
                                 <a class="account-link" v-bind:href="'/web/account.html?id='+id">
                                     <div class="card border-0 account">
                                         <div class="card-body">
                                             <h5 class="card-title">{{ number }}</h5>
-                                            <p class="card-text"> {{ formatDate(date) }}</p>
+                                            <p class="card-text"> {{ formatDate(creationDate) }}</p>
                                             <p class="text-center lead account-balance"> ${{ balance }} </p>
                                         </div>
                                     </div>

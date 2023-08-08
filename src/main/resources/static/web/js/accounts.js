@@ -20,7 +20,7 @@ Vue.createApp({
                 })
         },
         formatDate(date) {
-            return new Date(date).toLocaleDateString('en-us');
+            return new Date(creationDate).toLocaleDateString('en-us');
         },
     },
     mounted() {

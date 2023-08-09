@@ -8,8 +8,8 @@ public class AccountDTO {
 
     private long id;
 
-    String number;
-    LocalDate creationDate;
+    private String number;
+    private LocalDate creationDate;
     double balance;
 
     public AccountDTO() {

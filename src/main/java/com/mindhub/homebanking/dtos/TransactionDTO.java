@@ -4,9 +4,6 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.models.TransactionType;
 
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 
 public class TransactionDTO {
@@ -18,7 +15,7 @@ public class TransactionDTO {
     private String description;
     private LocalDate date;
 
-    private Account accountNumber;
+    private Account account;
 
     public TransactionDTO(Transaction transaction){
         this.id = transaction.getId();
@@ -49,7 +46,7 @@ public class TransactionDTO {
         return date;
     }
 
-    public Account getAccountNumber() {
-        return accountNumber;
+    public Account getAccount() {
+        return account;
     }
 }

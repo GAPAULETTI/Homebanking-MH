@@ -23,7 +23,7 @@ public class AccountController {
         public List<AccountDTO> getAccounts(){
                 return repository.findAll().stream().map(AccountDTO::new).collect(toList());
         }
-
+        @RequestMapping("/accounts/{id}")
         public AccountDTO getAccountById(@PathVariable Long id){
                 return repository.findById(id).map(account -> new AccountDTO(account)).orElse(null);
         }

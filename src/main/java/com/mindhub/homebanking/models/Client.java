@@ -4,10 +4,14 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 
 @Entity
 public class Client {
+
+    //Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -17,9 +21,15 @@ public class Client {
     private String lastName;
     private String email;
 
+    //Link to Account
     @OneToMany(mappedBy="client", fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
 
+    //ClientLoan Relationship
+    @OneToMany(mappedBy = "loanOwner", fetch = FetchType.EAGER)
+    private Set<ClientLoan> loans = new HashSet<>();
+
+    //Constructors
     public Client() {
     }
 
@@ -28,7 +38,7 @@ public class Client {
         this.lastName = lastName;
         this.email = email;
     }
-
+    //Getters and Setters
     public long getId() {
         return id;
     }
@@ -57,12 +67,23 @@ public class Client {
         this.email = email;
     }
 
+    // Get accounts
     public Set<Account> getAccounts() {
         return accounts;
     }
 
+    //Method to Add Account
     public void addAccount(Account account){
         account.setClient(this);
         accounts.add(account);
+    }
+
+    public Set<ClientLoan> getLoans() {
+        return loans;
+    }
+
+    public void addLoan(ClientLoan clientLoan){
+        clientLoan.setLoanOwner(this);
+        loans.add(clientLoan);
     }
 }

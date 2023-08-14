@@ -16,9 +16,9 @@ public class Account {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    String number;
-    LocalDate creationDate;
-    double balance;
+    private String number;
+    private LocalDate creationDate;
+    private double balance;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_id")
@@ -26,6 +26,10 @@ public class Account {
 
     @OneToMany(mappedBy = "account",fetch = FetchType.EAGER)
     private Set<Transaction> transactions = new HashSet<>();
+
+    //ClientLoan relationship
+    @OneToMany(mappedBy = "loan", fetch = FetchType.EAGER)
+    private Set<ClientLoan> clients = new HashSet<>();
 
     public Account() {
     }

@@ -5,6 +5,7 @@ import com.mindhub.homebanking.models.ClientLoan;
 import com.mindhub.homebanking.models.Loan;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ClientLoanDTO {
@@ -14,10 +15,7 @@ public class ClientLoanDTO {
     private double amount;
     private int payments;
 
-    private Client loansClient;
-
-    private Loan loans;
-
+    private String loanName;
 
 
 
@@ -28,10 +26,7 @@ public class ClientLoanDTO {
         this.id = clientLoan.getId();
         this.amount = clientLoan.getAmount();
         this.payments = clientLoan.getPayments();
-
-
-
-
+        this.loanName = clientLoan.getLoan().getName();
     }
 
     public long getId() {
@@ -44,14 +39,6 @@ public class ClientLoanDTO {
 
     public int getPayments() {
         return payments;
-    }
-
-    public Client getLoansClient() {
-        return loansClient;
-    }
-
-    public Loan getLoans() {
-        return loans;
     }
 
 

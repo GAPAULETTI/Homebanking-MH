@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class ClientLoan {
@@ -19,22 +22,26 @@ public class ClientLoan {
     //Client Relationship
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
-    private Client clientLoans;
+    private Client client;
 
     //Loan Relationship
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "loan_id")
-    private Loan loanClients;
+    private Loan loan;
 
     public ClientLoan() {
     }
 
-    public ClientLoan(double amount, int payments, Client clientLoans, Loan loanClients) {
+    public ClientLoan(double amount, int payments, Client client, Loan loan) {
         this.amount = amount;
         this.payments = payments;
-        this.clientLoans = clientLoans;
-        this.loanClients = loanClients;
+        this.client = client;
+        this.loan = loan;
     }
+
+
+
+
 
     public long getId() {
         return id;
@@ -55,21 +62,23 @@ public class ClientLoan {
     public void setPayments(int payments) {
         this.payments = payments;
     }
+
     @JsonIgnore
-    public Client getClientLoans() {
-        return clientLoans;
+    public Client getClient() {
+        return client;
     }
 
-    public void setClientLoans(Client clientLoans) {
-        this.clientLoans = clientLoans;
-    }
-    @JsonIgnore
-    public Loan getLoanClients() {
-        return loanClients;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public void setLoanClients(Loan loanClients) {
-        this.loanClients = loanClients;
+    public Loan getLoan() {
+        return loan;
     }
+
+    public void setLoan(Loan loan) {
+        this.loan = loan;
+    }
+
 
 }

@@ -66,7 +66,7 @@ public class HomebankingApplication {
 			loanRepository.save(automotriz);
 
 			ClientLoan loan1 = new ClientLoan(400000, 60, client1, hipotecario);
-			ClientLoan loan2 = new ClientLoan(50000, 12, client1, personal);
+			ClientLoan loan2 = new ClientLoan(500000, 12, client1, personal);
 
 			ClientLoan loan3 = new ClientLoan(100000, 24, client2, personal);
 			ClientLoan loan4 = new ClientLoan(200000, 36, client2,automotriz);

@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,21 +19,21 @@ public class ClientLoan {
     //Client Relationship
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
-    private Client loanOwner;
+    private Client clientLoans;
 
     //Loan Relationship
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "loan_id")
-    private Loan loan;
+    private Loan loanClients;
 
     public ClientLoan() {
     }
 
-    public ClientLoan(double amount, int payments, Client loanOwner, Loan loan) {
+    public ClientLoan(double amount, int payments, Client clientLoans, Loan loanClients) {
         this.amount = amount;
         this.payments = payments;
-        this.loanOwner = loanOwner;
-        this.loan = loan;
+        this.clientLoans = clientLoans;
+        this.loanClients = loanClients;
     }
 
     public long getId() {
@@ -54,21 +55,21 @@ public class ClientLoan {
     public void setPayments(int payments) {
         this.payments = payments;
     }
-
-    public Client getLoanOwner() {
-        return loanOwner;
+    @JsonIgnore
+    public Client getClientLoans() {
+        return clientLoans;
     }
 
-    public void setLoanOwner(Client loanOwner) {
-        this.loanOwner = loanOwner;
+    public void setClientLoans(Client clientLoans) {
+        this.clientLoans = clientLoans;
+    }
+    @JsonIgnore
+    public Loan getLoanClients() {
+        return loanClients;
     }
 
-    public Loan getLoan() {
-        return loan;
-    }
-
-    public void setLoan(Loan loan) {
-        this.loan = loan;
+    public void setLoanClients(Loan loanClients) {
+        this.loanClients = loanClients;
     }
 
 }

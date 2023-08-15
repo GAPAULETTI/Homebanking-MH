@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+
 
 public class ClientDTO {
 
@@ -20,13 +20,15 @@ public class ClientDTO {
 
     private Set<AccountDTO> accountsDTO = new HashSet<>();
 
+    private Set<ClientLoanDTO> loans = new HashSet<>();
+
     public ClientDTO(Client client){
         this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
         this.accountsDTO = client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toSet());
-
+        this.loans = client.getClientLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
 
     }
 
@@ -50,6 +52,7 @@ public class ClientDTO {
         return accountsDTO;
     }
 
-
-
+    public Set<ClientLoanDTO> getLoans() {
+        return loans;
+    }
 }

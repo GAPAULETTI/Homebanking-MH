@@ -16,9 +16,9 @@ public class Account {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    String number;
-    LocalDate creationDate;
-    double balance;
+    private String number;
+    private LocalDate creationDate;
+    private double balance;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_id")

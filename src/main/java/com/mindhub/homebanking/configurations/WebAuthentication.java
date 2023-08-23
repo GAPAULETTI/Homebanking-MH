@@ -28,15 +28,27 @@ public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception{
+
+
        auth.userDetailsService(inputName-> {
            Client client = clientRepository.findByEmail(inputName);
            if(client != null){
-               return new User(client.getEmail(), client.getPassword(),
-                       AuthorityUtils.createAuthorityList("CLIENT"));
-           }else{
+               if(client.getEmail() == "admin@mindhub.com"){
+                   return  new User(client.getEmail(), client.getPassword(),
+                           AuthorityUtils.createAuthorityList("ADMIN"));
+               }else {
+                   return new User(client.getEmail(), client.getPassword(),
+                           AuthorityUtils.createAuthorityList("CLIENT"));
+               }
+
+           } else{
                throw new UsernameNotFoundException("Unknown user: " + inputName);
            }
        });
+              //.and().inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("123456"))
+              //.roles("ADMIN");
+
+
     }
 
 }

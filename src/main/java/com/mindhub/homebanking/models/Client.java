@@ -2,6 +2,7 @@ package com.mindhub.homebanking.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.Authentication;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -24,6 +25,9 @@ public class Client {
     private String email;
 
     private String password;
+    private boolean admin;
+
+
 
     //Link to Account
     @OneToMany(mappedBy="client", fetch = FetchType.EAGER)
@@ -91,6 +95,8 @@ public class Client {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 
     // Get accounts
     public Set<Account> getAccounts() {

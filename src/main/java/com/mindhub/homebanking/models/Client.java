@@ -2,6 +2,7 @@ package com.mindhub.homebanking.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.Authentication;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -22,6 +23,11 @@ public class Client {
     private String firstName;
     private String lastName;
     private String email;
+
+    private String password;
+    private boolean admin;
+
+
 
     //Link to Account
     @OneToMany(mappedBy="client", fetch = FetchType.EAGER)
@@ -47,10 +53,11 @@ public class Client {
     public Client() {
     }
 
-    public Client( String firstName, String lastName, String email) {
+    public Client( String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password = password;
     }
     //Getters and Setters
     public long getId() {
@@ -80,6 +87,16 @@ public class Client {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
 
     // Get accounts
     public Set<Account> getAccounts() {
@@ -119,5 +136,16 @@ public class Client {
     public void addCard(Card card){
         card.setClient(this);
         cards.add(card);
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

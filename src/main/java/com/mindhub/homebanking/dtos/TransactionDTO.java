@@ -17,6 +17,9 @@ public class TransactionDTO {
 
     private Account account;
 
+    public TransactionDTO() {
+    }
+
     public TransactionDTO(Transaction transaction){
         this.id = transaction.getId();
         this.type = transaction.getType();

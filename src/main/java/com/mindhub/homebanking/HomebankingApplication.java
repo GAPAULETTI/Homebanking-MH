@@ -54,9 +54,9 @@ public class HomebankingApplication {
 			accountRepository.save(account3);
 			accountRepository.save(account4);
 
-			Transaction transaction1 = new Transaction(TransactionType.CREDITO, 3500, "Reintegro Mastercard", LocalDate.now());
-			Transaction transaction2 = new Transaction(TransactionType.DEBITO, -3000,"Compra NYC",LocalDate.now());
-			Transaction transaction3 = new Transaction(TransactionType.DEBITO, 4000, "MovEntreCtas", LocalDate.now());
+			Transaction transaction1 = new Transaction(TransactionType.CREDIT, 3500, "Reintegro Mastercard", LocalDate.now());
+			Transaction transaction2 = new Transaction(TransactionType.DEBIT, -3000,"Compra NYC",LocalDate.now());
+			Transaction transaction3 = new Transaction(TransactionType.DEBIT	, 4000, "MovEntreCtas", LocalDate.now());
 			account1.addTransaction(transaction1);
 			account1.addTransaction(transaction3);
 			account2.addTransaction(transaction2);

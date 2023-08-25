@@ -73,6 +73,7 @@ public class Account {
         this.client = client;
     }
 
+
     public Set<Transaction> getTransactions() {
         return transactions;
     }

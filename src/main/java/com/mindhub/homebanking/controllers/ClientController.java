@@ -33,7 +33,7 @@ public class ClientController {
     public List<ClientDTO> getClients(){
          return repoClient.findAll().stream().map(client -> new ClientDTO(client)).collect(toList());
     }
-    @RequestMapping("clients/{id}")
+    @RequestMapping("/clients/{id}")
     public ClientDTO getClientById(@PathVariable Long id){
         return repoClient.findById(id).map(client -> new ClientDTO(client)).orElse(null);
     }
@@ -55,9 +55,9 @@ public class ClientController {
     @GetMapping("/clients/current")
     public ClientDTO getByAuth(Authentication auth){
         Client clientCurrent  = repoClient.findByEmail(auth.getName());
-        ClientDTO clientDTOcurrent = new ClientDTO(clientCurrent);
-        return clientDTOcurrent;
+        return new ClientDTO(clientCurrent);
     }
+
 
 
 }

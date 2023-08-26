@@ -42,11 +42,6 @@ public class AccountController {
 
         }
 
-        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //String currentUser = authentication.getName();
-                //(@RequestBody Account newAccount, Authentication authentication)
-        //( @RequestParam String number, @RequestParam LocalDate creationDate, @RequestParam double balance)
-       // @PostMapping("clients/current/accounts")
 
         @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
         public ResponseEntity<Object> accountRegister (Authentication authentication ) {
@@ -75,24 +70,6 @@ public class AccountController {
                 return prefix + number;
         }
 
-        /*
-        @RequestMapping(path = "/clients", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(
-        @RequestParam String firstName, @RequestParam String lastName,
-        @RequestParam String email, @RequestParam String password){
-
-        if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
-        }
-
-        if(repoClient.findByEmail(email) != null){
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
-        }
-        repoClient.save(new Client(firstName,lastName,email, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-         */
 
 
 }

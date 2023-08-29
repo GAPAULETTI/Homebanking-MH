@@ -43,11 +43,11 @@ public class AccountController {
         }
 
 
+
         @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
         public ResponseEntity<Object> accountRegister (Authentication authentication ) {
 
                 Client currentClient = repoClient.findByEmail(authentication.getName());
-                System.out.println(currentClient);
 
                 if (currentClient.getAccounts().size() < 3) {
 
@@ -66,7 +66,7 @@ public class AccountController {
 
         public String numberAccount(){
                 String prefix = "VIN-";
-                int number = (int)(Math.random()*99999999+1);
+                int number = (int)(10000000 + (Math.random()*89999999));
                 return prefix + number;
         }
 

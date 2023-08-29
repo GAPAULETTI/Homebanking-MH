@@ -1,11 +1,11 @@
 package com.mindhub.homebanking.models;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+
 public class Card {
 
     @Id

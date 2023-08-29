@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -12,9 +12,13 @@
     <title>Accounts</title>
 </head>
 
-
 <body>
-    <div id="app">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <div id="app" v-cloak>
         <div class="toast-container position-absolute p-3 top-0 end-0" id="toastPlacement">
             <div id="danger-toast" data-bs-delay="2000" class="toast align-items-center text-white bg-danger border-0"
                 role="alert" aria-live="assertive" aria-atomic="true">
@@ -78,36 +82,37 @@
                     <div class="row mt-3">
                         <div class="col">
                             <h2 class="display-6 subtitle">Accounts</h2>
+                            <button v-if="clientInfo.accountsDTO != null && clientInfo.accountsDTO.length < 3"
+                                v-on:click="create" id="create" class="btn btn-sm btn-success">Create</button>
                         </div>
-                        <div class="row mx-2">
-                            <div v-for="{id, number, creationDate, balance} in clientInfo.accountsDTO"
-                                class="col-12 col-md-4 mt-2 ">
-                                <a class="account-link" v-bind:href="'/web/account.html?id='+id">
-                                    <div class="card border-0 account">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ number }}</h5>
-                                            <p class="card-text"> {{ formatDate(creationDate) }}</p>
-                                            <p class="text-center lead account-balance"> ${{ balance }} </p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <h2 class="display-6">Loans</h2>
-                                <span class="small" v-if="clientInfo.loan != null && clientInfo.loans.length <= 0">No
-                                    loans</span>
-                            </div>
-                        </div>
-                        <div class="row mx-2">
-                            <div v-for="loan in clientInfo.loans" class="col-12 col-md-4 mt-2">
-                                <div class="card border-0 loan">
+                    </div>
+                    <div class="row mx-2">
+                        <div v-for="account in clientInfo.accountsDTO" class="col-12 col-md-4 mt-2 ">
+                            <a class="account-link" v-bind:href="'/web/account.html?id='+account.id">
+                                <div class="card border-0 account">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ loan.name }}</h5>
-                                        <p class="card-text"> payments: {{ loan.payments}}</p>
-                                        <p class="text-center lead account-balance"> ${{ loan.amount }} </p>
+                                        <h5 class="card-title">{{ account.number }}</h5>
+                                        <p class="card-text"> {{ formatDate(account.creationDate) }}</p>
+                                        <p class="text-center lead account-balance"> ${{ account.balance }} </p>
                                     </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col">
+                            <h2 class="display-6">Loans</h2>
+                            <span class="small" v-if="clientInfo.loan != null && clientInfo.loans.length <= 0">No
+                                loans</span>
+                        </div>
+                    </div>
+                    <div class="row mx-2">
+                        <div v-for="loan in clientInfo.loans" class="col-12 col-md-4 mt-2">
+                            <div class="card border-0 loan">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ loan.name }}</h5>
+                                    <p class="card-text"> payments: {{ loan.payments}}</p>
+                                    <p class="text-center lead account-balance"> ${{ loan.amount }} </p>
                                 </div>
                             </div>
                         </div>

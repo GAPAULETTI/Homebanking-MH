@@ -6,6 +6,8 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,11 @@ public class ClientController {
     @Autowired
     private ClientRepository repoClient;
     @Autowired
+    private ClientService clientService;
+    @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private AccountService accountService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -54,15 +60,20 @@ public class ClientController {
             return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
         }
         Client newClient = new Client(firstName,lastName,email, passwordEncoder.encode(password));
-       newClient.addAccount(accountRepository.save(new Account(account.numberAccount(), LocalDate.now(), 0.0)));
-        repoClient.save(newClient);
+        String accountNumber = account.generateNumberAccount();
+        if(accountNumber.equals(accountService.getAccountByNumber(accountNumber))){
+            return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
+        }
+        Account newAccount = new Account(accountNumber, LocalDate.now(), 0.0);
+        accountService.saveAccount(newAccount);
+        newClient.addAccount(newAccount);
+        clientService.saveClient(newClient);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @GetMapping("/clients/current")
-    public ClientDTO getByAuth(Authentication auth){
-        Client clientCurrent  = repoClient.findByEmail(auth.getName());
-        return new ClientDTO(clientCurrent);
+    public ClientDTO getByAuth(Authentication authentication){
+        return new ClientDTO(clientService.getByAuth(authentication));
     }
 
 

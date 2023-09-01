@@ -58,11 +58,17 @@ public class AccountController {
 
                 Client currentClient = clientService.getByAuth(authentication);
 
+                String numberAccount = generateNumberAccount();
+                if(numberAccount.equals(accountService.getAccountByNumber(numberAccount))){
+                        return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
+                }
                 if (currentClient.getAccounts().size() < 3) {
 
-                        Account account = new Account(numberAccount(), LocalDate.now(),0.0);
-                        currentClient.addAccount(accountRepository.save(account));
-                        repoClient.save(currentClient);
+                        Account account = new Account(numberAccount, LocalDate.now(),0.0);
+                        accountService.saveAccount(account);
+                        currentClient.addAccount(account);
+
+                        clientService.saveClient(currentClient);
 
                        return new ResponseEntity<>("The new account was created successfully",HttpStatus.CREATED);
               } else {
@@ -71,7 +77,7 @@ public class AccountController {
         }
 
 
-        public String numberAccount(){
+        public String generateNumberAccount(){
                 String prefix = "VIN-";
                 int number = (int)(10000000 + (Math.random()*89999999));
                 return prefix + number;

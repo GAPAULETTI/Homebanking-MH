@@ -51,4 +51,6 @@ public class AccountServiceImplement implements AccountService {
         Set<Account> accounts = clientCurrent.getAccounts();
         return accounts.stream().map(AccountDTO::new).collect(Collectors.toSet());
     }
+
+    
 }

@@ -26,17 +26,18 @@ public class WebAuthorization {
         http.authorizeRequests()
 
                 .antMatchers("/web/**").permitAll()
-                .antMatchers( "/api/login", "/api/logout").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/clients").permitAll()
+                .antMatchers( HttpMethod.POST,"/api/login", "/api/logout").permitAll()
                 .antMatchers("/manager.html", "/rest/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST,"/api/clients").hasAuthority("CLIENT")
                 .antMatchers("h2-console").hasAuthority("ADMIN")
                 .antMatchers("/api/clients/current").hasAuthority("CLIENT")
-                .antMatchers("/api/clients/current/accounts").hasAuthority("CLIENT")
                 .antMatchers("/api/clients/accounts/**").hasAuthority("CLIENT")
                 .antMatchers("/api/accounts/**").hasAuthority("CLIENT")
-                .antMatchers("/api/transactions").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.POST,"/api/transactions").hasAuthority("CLIENT")
                 .antMatchers( "/api/clients/current/accounts").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.POST,"/api/clients/current/accounts").hasAuthority("CLIENT")
                 .antMatchers("/api/clients/current/cards").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.POST,"/api/clients/current/cards").hasAuthority("CLIENT")
                 .antMatchers( "/api/**").hasAuthority("ADMIN");
 
 

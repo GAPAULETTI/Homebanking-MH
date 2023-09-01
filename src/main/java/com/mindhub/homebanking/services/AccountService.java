@@ -22,4 +22,6 @@ public interface AccountService {
     Account findById(Long id);
 
     Set<AccountDTO> getCurrentAccount(Authentication authentication);
+
+
 }

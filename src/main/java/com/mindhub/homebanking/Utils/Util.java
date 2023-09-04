@@ -1,6 +1,12 @@
 package com.mindhub.homebanking.Utils;
 
+
+import com.mindhub.homebanking.models.Loan;
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class Util {
+
+
 
     public static String generateNumberAccount(){
         String prefix = "VIN-";
@@ -20,4 +26,6 @@ public class Util {
     public static int cvvNumber(){
         return (int)(100 + (Math.random()*999));
     }
+
+
 }

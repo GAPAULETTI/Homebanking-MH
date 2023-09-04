@@ -3,10 +3,12 @@ package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.dtos.LoanApplicationDTO;
 import com.mindhub.homebanking.dtos.LoanDTO;
 import com.mindhub.homebanking.models.*;
+import com.mindhub.homebanking.repositories.ClientLoanRepository;
 import com.mindhub.homebanking.repositories.LoanRepository;
 import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.ClientService;
 import com.mindhub.homebanking.services.LoanService;
+import com.mindhub.homebanking.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,10 @@ public class LoanController {
     private LoanService loanService;
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private ClientLoanRepository clientLoanRepository;
+    @Autowired
+    private TransactionService transactionService;
 
     @Autowired
     AccountService accountService;
@@ -54,11 +60,17 @@ public class LoanController {
 
 
         ClientLoan loan1 = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
+        clientLoanRepository.save(loan1);
 
-
-        Transaction transaction1 = new Transaction(TransactionType.CREDIT, loanApplicationDTO.getAmount(), "Loan", LocalDate.now());
+        Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, (loanApplicationDTO.getAmount() + loanApplicationDTO.getAmount()*0.2) , ("Loan Type: " + loan.getName() + "Loan approved"), LocalDate.now());
+        transactionService.save(accreditedLoan);
+        toAccountNumber.setBalance(toAccountNumber.getBalance() + loanApplicationDTO.getAmount());
+        accountService.saveAccount(toAccountNumber);
         currentClient.addLoan(loan1);
+        clientService.saveClient(currentClient);
 
-        return null;
+
+
+        return new ResponseEntity<>("Loan created successfully", HttpStatus.CREATED);
     }
 }

@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.mindhub.homebanking.Utils.Util.generateNumberAccount;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
@@ -47,34 +48,36 @@ public class ClientController {
     public ClientDTO getClientById(@PathVariable Long id){
         return repoClient.findById(id).map(client -> new ClientDTO(client)).orElse(null);
     }
+    @GetMapping("/clients/current")
+    public ClientDTO getByAuth(Authentication authentication){
+        return new ClientDTO(clientService.getByAuth(authentication));
+    }
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
-    public ResponseEntity<Object> newClient(
+    public ResponseEntity<Object> register(
         @RequestParam String firstName, @RequestParam String lastName,
-        @RequestParam String email, @RequestParam String password, AccountController account){
+        @RequestParam String email, @RequestParam String password){
 
         if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
+
         if(repoClient.findByEmail(email) != null){
             return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
         }
-        Client newClient = new Client(firstName,lastName,email, passwordEncoder.encode(password));
-        String accountNumber = account.generateNumberAccount();
-        if(accountNumber.equals(accountService.getAccountByNumber(accountNumber))){
-            return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
-        }
-        Account newAccount = new Account(accountNumber, LocalDate.now(), 0.0);
-        accountService.saveAccount(newAccount);
-        newClient.addAccount(newAccount);
-        clientService.saveClient(newClient);
 
+
+        if(accountService.getAccountByNumber(generateNumberAccount()) != null){
+           return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
+        }
+        Client newClient = new Client(firstName,lastName,email, passwordEncoder.encode(password));
+        repoClient.save(newClient);
+        Account account = new Account(generateNumberAccount(), LocalDate.now(), 0.0);
+        accountService.saveAccount(account);
+        newClient.addAccount(account);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    @GetMapping("/clients/current")
-    public ClientDTO getByAuth(Authentication authentication){
-        return new ClientDTO(clientService.getByAuth(authentication));
-    }
+
 
 
 

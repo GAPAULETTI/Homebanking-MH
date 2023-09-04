@@ -76,10 +76,6 @@ public class HomebankingApplication {
 			ClientLoan loan1 = new ClientLoan(400000, 60);
 			ClientLoan loan2 = new ClientLoan(500000, 12);
 
-			ClientLoan loan3 = new ClientLoan(100000, 24);
-			ClientLoan loan4 = new ClientLoan(200000, 36);
-
-
 			hipotecario.addLoan(loan1);
 			client1.addLoan(loan1);
 
@@ -89,8 +85,7 @@ public class HomebankingApplication {
 
 			clientLoanRepository.save(loan1);
 			clientLoanRepository.save(loan2);
-			clientLoanRepository.save(loan3);
-			clientLoanRepository.save(loan4);
+
 
 
 			Card card1 = new Card(client1.getFirstName()+" "+client1.getLastName(), CardType.DEBIT, CardColor.GOLD, "8909 2321 1232 9210", 321, LocalDate.now(), LocalDate.now().plusYears(5));

@@ -20,6 +20,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mindhub.homebanking.Utils.Util.cvvNumber;
+import static com.mindhub.homebanking.Utils.Util.generateNumberCard;
+
 @RestController
 @RequestMapping("/api")
 public class CardController {
@@ -57,7 +60,7 @@ public class CardController {
 
         if(generateNumberCard().equals(cardService.findByCardNumber(generateNumberCard()))) {
             return new ResponseEntity<>("This account number exists", HttpStatus.FORBIDDEN);
-        }else {
+        }else{
             Card newCard = new Card(cardHolder(currentClient.getFirstName(), currentClient.getLastName()), cardType, cardColor,
                     numberCard, cvvNumber(), LocalDate.now(), LocalDate.now().plusYears(5));
             currentClient.addCard(newCard);
@@ -73,16 +76,6 @@ public class CardController {
     public String cardHolder(String firstName, String lastName){
             return firstName + " " + lastName;
     }
-    public String generateNumberCard(){
-        int max = 9999;
-        int min = 1000;
-        int num1 = (int) (1000 + (Math.random()*8999));
-        int num2 = (int) (1000 + (Math.random()*8999));
-        int num3 = (int) (1000 + (Math.random()*8999));
-        int num4 = (int) (1000 + (Math.random()*8999));
-        return num1 + " " + num2 + " " + num3 + " " + num4;
-    }
-    public int cvvNumber(){
-        return (int)(100 + (Math.random()*999));
-    }
+
+
 }

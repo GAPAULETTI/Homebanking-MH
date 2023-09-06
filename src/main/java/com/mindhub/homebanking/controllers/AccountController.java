@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mindhub.homebanking.Utils.Util.generateNumberAccount;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -39,13 +40,14 @@ public class AccountController {
         private ClientRepository repoClient;
 
 
-        @RequestMapping("/accounts")
+        @GetMapping("/accounts")
         public List<AccountDTO> getAccounts(){
-                return accountRepository.findAll().stream().map(AccountDTO::new).collect(toList());
+                return accountService.getAccounts();
         }
-        @RequestMapping("/accounts/{id}")
+        @GetMapping("/accounts/{id}")
         public AccountDTO getAccountById(@PathVariable Long id){
-                return accountRepository.findById(id).map(account -> new AccountDTO(account)).orElse(null);
+                return accountService.getAccountDTO(id);
+                //return accountRepository.findById(id).map(account -> new AccountDTO(account)).orElse(null);
 
         }
         @GetMapping("/clients/current/accounts")
@@ -59,8 +61,8 @@ public class AccountController {
                 Client currentClient = clientService.getByAuth(authentication);
 
                 String numberAccount = generateNumberAccount();
-                if(numberAccount.equals(accountService.getAccountByNumber(numberAccount))){
-                        return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
+                if(accountService.getAccountByNumber(numberAccount) != null){
+                      return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
                 }
                 if (currentClient.getAccounts().size() < 3) {
 
@@ -77,11 +79,7 @@ public class AccountController {
         }
 
 
-        public String generateNumberAccount(){
-                String prefix = "VIN-";
-                int number = (int)(10000000 + (Math.random()*89999999));
-                return prefix + number;
-        }
+
 
 
 

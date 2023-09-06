@@ -22,6 +22,12 @@ public class ClientLoanDTO {
 
     public ClientLoanDTO() {
     }
+
+    public ClientLoanDTO(double amount, int payments) {
+        this.amount = amount;
+        this.payments = payments;
+    }
+
     public ClientLoanDTO(ClientLoan clientLoan){
         this.id = clientLoan.getId();
         this.amount = clientLoan.getAmount();

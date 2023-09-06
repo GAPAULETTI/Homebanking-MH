@@ -14,7 +14,7 @@ public interface AccountService {
     void saveAccount(Account account);
 
 
-
+    List<AccountDTO> getAccounts();
     AccountDTO getAccountDTO(Long id);
 
     Account getAccountByNumber(String number);

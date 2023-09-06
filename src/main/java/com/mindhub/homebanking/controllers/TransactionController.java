@@ -7,6 +7,9 @@ import com.mindhub.homebanking.models.TransactionType;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.ClientService;
+import com.mindhub.homebanking.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +28,15 @@ public class TransactionController {
 
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private TransactionService transactionService;
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private ClientService clientService;
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -37,10 +46,10 @@ public class TransactionController {
     public ResponseEntity<Object> createTransaction( @RequestParam String fromAccountNumber,@RequestParam String toAccountNumber,
                                                     @RequestParam double amount, @RequestParam String description,
                                                      Authentication authentication){
-        Client currentClient = clientRepository.findByEmail(authentication.getName());
+        Client currentClient = clientService.getByAuth(authentication);
         //Properties names in frontend (fromAccountNumber, toAccountNumber, amount, description)
-        Account debitAccount = accountRepository.findByNumber(fromAccountNumber);
-        Account creditAccount = accountRepository.findByNumber(toAccountNumber);
+        Account debitAccount = accountService.getAccountByNumber(fromAccountNumber);
+        Account creditAccount = accountService.getAccountByNumber(toAccountNumber);
 
 
         if( description.isEmpty() || fromAccountNumber.isEmpty() || toAccountNumber.isEmpty()){
@@ -57,15 +66,15 @@ public class TransactionController {
         if( debitAccount.getNumber() != null && creditAccount.getNumber() != null && debitAccount.getClient() == currentClient){
             Transaction debitTransaction = new Transaction(TransactionType.DEBIT, amount, description, LocalDate.now());
             debitAccount.addTransaction(debitTransaction);
-            transactionRepository.save(debitTransaction);
+            transactionService.save(debitTransaction);
             debitAccount.setBalance(debitAccount.getBalance() - amount);
-            accountRepository.save(debitAccount);
+            accountService.saveAccount(debitAccount);
 
             Transaction creditTransaction = new Transaction(TransactionType.CREDIT, amount, description,LocalDate.now());
             creditAccount.addTransaction(creditTransaction);
-            transactionRepository.save(creditTransaction);
+            transactionService.save(creditTransaction);
             creditAccount.setBalance(creditAccount.getBalance() + amount);
-            accountRepository.save(creditAccount);
+            accountService.saveAccount(creditAccount);
 
             return new ResponseEntity<>(HttpStatus.CREATED);
         }else{

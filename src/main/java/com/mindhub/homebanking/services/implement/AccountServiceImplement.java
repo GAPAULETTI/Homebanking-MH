@@ -29,11 +29,17 @@ public class AccountServiceImplement implements AccountService {
         accountRepository.save(account);
     }
 
+    @Override
+    public List<AccountDTO> getAccounts() {
+        return accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toList());
+    }
+
 
     @Override
     public AccountDTO getAccountDTO(Long id) {
         return accountRepository.findById(id).map(AccountDTO::new).orElse(null);
     }
+
 
     @Override
     public Account getAccountByNumber(String number) {

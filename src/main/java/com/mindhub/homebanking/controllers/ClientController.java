@@ -34,25 +34,23 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
     @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
     private AccountService accountService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @RequestMapping("/clients")
+    @GetMapping("/clients")
     public List<ClientDTO> getClients(){
-         return repoClient.findAll().stream().map(client -> new ClientDTO(client)).collect(toList());
+         return clientService.getClientsDTO();
     }
-    @RequestMapping("/clients/{id}")
+    @GetMapping("/clients/{id}")
     public ClientDTO getClientById(@PathVariable Long id){
-        return repoClient.findById(id).map(client -> new ClientDTO(client)).orElse(null);
+        return clientService.getClientDTO(id);
     }
     @GetMapping("/clients/current")
     public ClientDTO getByAuth(Authentication authentication){
         return new ClientDTO(clientService.getByAuth(authentication));
     }
-    @RequestMapping(path = "/clients", method = RequestMethod.POST)
+    @PostMapping("/clients")
     public ResponseEntity<Object> register(
         @RequestParam String firstName, @RequestParam String lastName,
         @RequestParam String email, @RequestParam String password){
@@ -71,15 +69,12 @@ public class ClientController {
            return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
         }
         Client newClient = new Client(firstName,lastName,email, passwordEncoder.encode(password));
-        repoClient.save(newClient);
+        clientService.saveClient(newClient);
         Account account = new Account(generateNumberAccount(), LocalDate.now(), 0.0);
         accountService.saveAccount(account);
         newClient.addAccount(account);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-
-
 
 
 }

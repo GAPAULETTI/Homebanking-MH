@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 @Service
 public class LoanServiceImplement implements LoanService {
@@ -30,8 +31,8 @@ public class LoanServiceImplement implements LoanService {
     }
 
     @Override
-    public List<LoanDTO> getLoansDTO() {
-        return loanRepository.findAll().stream().map(loan -> new LoanDTO(loan)).collect(Collectors.toList());
+    public Set<LoanDTO> getLoansDTO() {
+        return loanRepository.findAll().stream().map(loan -> new LoanDTO(loan)).collect(Collectors.toSet());
     }
 
     @Override

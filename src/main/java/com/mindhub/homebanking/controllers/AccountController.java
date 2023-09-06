@@ -40,13 +40,14 @@ public class AccountController {
         private ClientRepository repoClient;
 
 
-        @RequestMapping("/accounts")
+        @GetMapping("/accounts")
         public List<AccountDTO> getAccounts(){
-                return accountRepository.findAll().stream().map(AccountDTO::new).collect(toList());
+                return accountService.getAccounts();
         }
-        @RequestMapping("/accounts/{id}")
+        @GetMapping("/accounts/{id}")
         public AccountDTO getAccountById(@PathVariable Long id){
-                return accountRepository.findById(id).map(account -> new AccountDTO(account)).orElse(null);
+                return accountService.getAccountDTO(id);
+                //return accountRepository.findById(id).map(account -> new AccountDTO(account)).orElse(null);
 
         }
         @GetMapping("/clients/current/accounts")
@@ -60,9 +61,9 @@ public class AccountController {
                 Client currentClient = clientService.getByAuth(authentication);
 
                 String numberAccount = generateNumberAccount();
-                //if(numberAccount.equals(accountService.getAccountByNumber(numberAccount))){
-                  //      return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
-                //}
+                if(accountService.getAccountByNumber(numberAccount) != null){
+                      return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
+                }
                 if (currentClient.getAccounts().size() < 3) {
 
                         Account account = new Account(numberAccount, LocalDate.now(),0.0);

@@ -28,15 +28,9 @@ import static com.mindhub.homebanking.Utils.Util.generateNumberCard;
 public class CardController {
 
     @Autowired
-    private CardRepository cardRepository;
-
-    @Autowired
     private CardService cardService;
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    private ClientRepository repoClient;
 
     @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
     public ResponseEntity<Object> createCard(@RequestParam @NotNull CardType cardType, @RequestParam @NotNull CardColor cardColor,

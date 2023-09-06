@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,9 +40,9 @@ public class LoanController {
 
     @GetMapping("/loans")
     public Set<LoanDTO> getLoans(){
-            return loanRepository.findAll().stream().map(loan -> new LoanDTO(loan)).collect(Collectors.toSet());
+            return loanService.getLoansDTO();
     }
-
+    @Transactional
     @PostMapping("/loans")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplicationDTO loanApplicationDTO,
                                              Authentication authentication, Loan loan) {
@@ -56,20 +57,23 @@ public class LoanController {
         if(loanApplicationDTO.getToAccountNumber().isEmpty()){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        if(loanApplicationDTO.getAmount() < loan.getMaxAmount()){return new ResponseEntity<>(HttpStatus.FORBIDDEN);}
+        if(loanApplicationDTO.getAmount() > requestedLoan.getMaxAmount()){return new ResponseEntity<>("This amount exceeds the maximum available",HttpStatus.FORBIDDEN);}
 
+        if(currentClient.getAccounts().equals(toAccountNumber) == true){
+            return new ResponseEntity<>("This account is not associated with an authorized client", HttpStatus.FORBIDDEN);
+        }
 
-        ClientLoan loan1 = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
-        clientLoanRepository.save(loan1);
+        ClientLoan creditLoan = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
+        clientLoanRepository.save(creditLoan);
+        currentClient.addLoan(creditLoan);
+        requestedLoan.addLoan(creditLoan);
 
-        Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, (loanApplicationDTO.getAmount() + loanApplicationDTO.getAmount()*0.2) , ("Loan Type: " + loan.getName() + "Loan approved"), LocalDate.now());
+        Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, (loanApplicationDTO.getAmount() + loanApplicationDTO.getAmount()*0.2) , (requestedLoan.getName() + " <<loan approved>> "), LocalDate.now());
+        toAccountNumber.addTransaction(accreditedLoan);
         transactionService.save(accreditedLoan);
         toAccountNumber.setBalance(toAccountNumber.getBalance() + loanApplicationDTO.getAmount());
         accountService.saveAccount(toAccountNumber);
-        currentClient.addLoan(loan1);
-        clientService.saveClient(currentClient);
-
-
+        //clientService.saveClient(currentClient);
 
         return new ResponseEntity<>("Loan created successfully", HttpStatus.CREATED);
     }

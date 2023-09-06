@@ -5,6 +5,7 @@ import com.mindhub.homebanking.models.Loan;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 public interface LoanService {
 
@@ -14,7 +15,7 @@ public interface LoanService {
 
     LoanDTO getById(Long id);
 
-    List<LoanDTO> getLoansDTO();
+    Set<LoanDTO> getLoansDTO();
 
     Loan getByName(String name);
 }

@@ -20,8 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.mindhub.homebanking.Utils.Util.cvvNumber;
-import static com.mindhub.homebanking.Utils.Util.generateNumberCard;
+import static com.mindhub.homebanking.Utils.Util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -67,9 +66,7 @@ public class CardController {
 
 
 
-    public String cardHolder(String firstName, String lastName){
-            return firstName + " " + lastName;
-    }
+
 
 
 }

@@ -27,5 +27,8 @@ public class Util {
         return (int)(100 + (Math.random()*999));
     }
 
+    public static String cardHolder(String firstName, String lastName){
+        return firstName + " " + lastName;
+    }
 
 }

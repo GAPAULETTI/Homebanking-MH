@@ -61,7 +61,7 @@ public class ClientController {
 
 
         if(repoClient.findByEmail(email) != null){
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Username already in use", HttpStatus.FORBIDDEN);
         }
 
 
@@ -69,11 +69,11 @@ public class ClientController {
            return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
         }
         Client newClient = new Client(firstName,lastName,email, passwordEncoder.encode(password));
-        clientService.saveClient(newClient);
         Account account = new Account(generateNumberAccount(), LocalDate.now(), 0.0);
         accountService.saveAccount(account);
         newClient.addAccount(account);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        clientService.saveClient(newClient);
+        return new ResponseEntity<>("Registration was successful",HttpStatus.CREATED);
     }
 
 

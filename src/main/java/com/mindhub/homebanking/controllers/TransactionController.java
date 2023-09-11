@@ -51,19 +51,22 @@ public class TransactionController {
         Account debitAccount = accountService.getAccountByNumber(fromAccountNumber);
         Account creditAccount = accountService.getAccountByNumber(toAccountNumber);
 
-
-        if( description.isEmpty() || fromAccountNumber.isEmpty() || toAccountNumber.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if( description.isEmpty() || fromAccountNumber.isEmpty() || toAccountNumber.isEmpty() || amount <= 0){
+            return new ResponseEntity<>("You must complete all the required information",HttpStatus.FORBIDDEN);
         }
+
         if(debitAccount.getNumber() == creditAccount.getNumber()){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("The origin account cannot be same the destination account",HttpStatus.FORBIDDEN);
         }
         if(debitAccount.getBalance() < amount){
             return new ResponseEntity<>("non-sufficient funds", HttpStatus.FORBIDDEN);
         }
+        if(debitAccount.getClient() != currentClient){
+            return new ResponseEntity<>("The transfer cannot be performed by an unauthenticated client.", HttpStatus.FORBIDDEN);
+        }
 
 
-        if( debitAccount.getNumber() != null && creditAccount.getNumber() != null && debitAccount.getClient() == currentClient){
+        if( debitAccount.getNumber() != null && creditAccount.getNumber() != null){
             Transaction debitTransaction = new Transaction(TransactionType.DEBIT, amount, description, LocalDate.now());
             debitAccount.addTransaction(debitTransaction);
             transactionService.save(debitTransaction);
@@ -76,9 +79,10 @@ public class TransactionController {
             creditAccount.setBalance(creditAccount.getBalance() + amount);
             accountService.saveAccount(creditAccount);
 
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>("The transfer was successful ",HttpStatus.CREATED);
+
         }else{
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Account not found",HttpStatus.FORBIDDEN);
         }
         
     }

@@ -18,4 +18,5 @@ public interface CardService {
 
     Card findByCardNumber(String cardNumber);
 
+    Card deleteCard(Long id);
 }

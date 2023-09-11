@@ -50,5 +50,10 @@ public class CardServiceImplement implements CardService {
 
     }
 
+    @Override
+    public Card deleteCard(Long id) {
+        return null;
+    }
+
 
 }

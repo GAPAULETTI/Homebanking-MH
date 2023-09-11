@@ -55,13 +55,14 @@ public class LoanController {
             return new ResponseEntity<>("This parameters are not permit ", HttpStatus.FORBIDDEN);
         }
         if(loanApplicationDTO.getToAccountNumber().isEmpty()){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("You must choose an destination account",HttpStatus.FORBIDDEN);
         }
         if(loanApplicationDTO.getAmount() > requestedLoan.getMaxAmount()){return new ResponseEntity<>("This amount exceeds the maximum available",HttpStatus.FORBIDDEN);}
 
         if(currentClient.getAccounts().equals(toAccountNumber) == true){
             return new ResponseEntity<>("This account is not associated with an authorized client", HttpStatus.FORBIDDEN);
         }
+
 
         ClientLoan creditLoan = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
         clientLoanRepository.save(creditLoan);

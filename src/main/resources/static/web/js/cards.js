@@ -4,6 +4,7 @@ Vue.createApp({
             clientInfo: {},
             creditCards: [],
             debitCards: [],
+            cardIdToDelete:
             errorToats: null,
             errorMsg: null,
         }
@@ -21,6 +22,9 @@ Vue.createApp({
                     this.errorMsg = "Error getting data";
                     this.errorToats.show();
                 })
+        },
+        deleteCard: function(){
+            axios.delete("/api/clients/current/cards",`${cardIdToDelete(id)}`)
         },
         formatDate: function (date) {
             return new Date(date).toLocaleDateString('en-gb');

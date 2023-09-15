@@ -69,7 +69,7 @@ public class ClientController {
            return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
         }
         Client newClient = new Client(firstName,lastName,email, passwordEncoder.encode(password));
-        Account account = new Account(generateNumberAccount(), LocalDate.now(), 0.0);
+        Account account = new Account(generateNumberAccount(), LocalDate.now(), 0.0, true);
         accountService.saveAccount(account);
         newClient.addAccount(account);
         clientService.saveClient(newClient);

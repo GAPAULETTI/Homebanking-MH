@@ -52,7 +52,9 @@ public class AccountController {
         }
         @GetMapping("/clients/current/accounts")
         public Set<AccountDTO> getCurrentAccount(Authentication authentication){
-              return accountService.getCurrentAccount(authentication)  ;
+
+              return accountService.getCurrentAccount(authentication).stream()
+                      .filter(accountDTO -> accountDTO.isActiveAccount() == true).collect(Collectors.toSet());
         }
 
         @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
@@ -66,7 +68,7 @@ public class AccountController {
                 }
                 if (currentClient.getAccounts().size() < 3) {
 
-                        Account account = new Account(numberAccount, LocalDate.now(),0.0);
+                        Account account = new Account(numberAccount, LocalDate.now(),0.0, true);
                         accountService.saveAccount(account);
                         currentClient.addAccount(account);
 
@@ -76,6 +78,18 @@ public class AccountController {
               } else {
                       return new ResponseEntity<>("The maximum account number has been reached.",HttpStatus.FORBIDDEN);}
 
+        }
+
+        @PatchMapping("/clients/current/accounts")
+        public ResponseEntity<Object> deleteAccount(@RequestParam String accountNumber, Authentication authentication){
+
+                Client currentClient = clientService.getByAuth(authentication);
+                Account accountToDelete = accountService.getAccountByNumber(accountNumber);
+                if(accountNumber != null){
+                   accountToDelete.setActiveAccount(false);
+                   return new ResponseEntity<>("The account is banished", HttpStatus.OK);
+                }
+                return new ResponseEntity<>("This account number does not exist", HttpStatus.FORBIDDEN);
         }
 
 }

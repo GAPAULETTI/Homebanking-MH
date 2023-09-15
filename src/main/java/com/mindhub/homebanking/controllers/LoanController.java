@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.controllers;
 
+import com.mindhub.homebanking.Utils.Util;
 import com.mindhub.homebanking.dtos.LoanApplicationDTO;
 import com.mindhub.homebanking.dtos.LoanDTO;
 import com.mindhub.homebanking.models.*;
@@ -63,16 +64,18 @@ public class LoanController {
             return new ResponseEntity<>("This account is not associated with an authorized client", HttpStatus.FORBIDDEN);
         }
 
+        double accountBalance = toAccountNumber.getBalance();
+        double loanAmount = loanApplicationDTO.getAmount()+(loanApplicationDTO.getAmount()*0.2);
 
         ClientLoan creditLoan = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
         clientLoanRepository.save(creditLoan);
         currentClient.addLoan(creditLoan);
         requestedLoan.addLoan(creditLoan);
 
-        Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, (loanApplicationDTO.getAmount() + loanApplicationDTO.getAmount()*0.2) , (requestedLoan.getName() + " <<loan approved>> "), LocalDate.now());
+        Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, loanAmount , (requestedLoan.getName() + " <<loan approved>> "), LocalDate.now(), Util.updateCreditBalance(accountBalance, loanAmount ));
         toAccountNumber.addTransaction(accreditedLoan);
         transactionService.save(accreditedLoan);
-        toAccountNumber.setBalance(toAccountNumber.getBalance() + loanApplicationDTO.getAmount());
+        toAccountNumber.setBalance(accountBalance + loanAmount);
         accountService.saveAccount(toAccountNumber);
         //clientService.saveClient(currentClient);
 

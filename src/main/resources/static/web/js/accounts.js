@@ -2,6 +2,7 @@ Vue.createApp({
     data() {
         return {
             clientInfo: {},
+            selectedAccount: [],
             errorToats: null,
             errorMsg: null,
         }
@@ -12,6 +13,8 @@ Vue.createApp({
                 .then((response) => {
                     //get client ifo
                     this.clientInfo = response.data;
+
+                    console.log(this.clientInfo)
                 })
                 .catch((error) => {
                     // handle error
@@ -29,6 +32,33 @@ Vue.createApp({
                     this.errorMsg = "Sign out failed"
                     this.errorToats.show();
                 })
+        },
+        deleteAccount: function(){
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                axios.patch(`/api/clients/current/accounts?accountNumber=${this.selectedAccount}`)
+                .then(response =>{
+                Swal.fire(
+                          'Deleted!',
+                          'Your file has been deleted.',
+                          'success'
+                    )
+                })
+              }
+            })
+            .catch((error) => {
+                                this.errorMsg = error.response.data;
+                                this.errorToats.show();
+                            })
+
         },
         create: function () {
             axios.post('/api/clients/current/accounts')

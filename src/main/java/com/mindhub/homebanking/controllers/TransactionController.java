@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.controllers;
 
+import com.mindhub.homebanking.Utils.Util;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+
+import static com.mindhub.homebanking.Utils.Util.updateDebitBalance;
 
 @RestController
 @RequestMapping("/api")
@@ -65,15 +68,18 @@ public class TransactionController {
             return new ResponseEntity<>("The transfer cannot be performed by an unauthenticated client.", HttpStatus.FORBIDDEN);
         }
 
+        double debitAccountBalance = debitAccount.getBalance();
+        double creditAccountBalance = creditAccount.getBalance();
 
         if( debitAccount.getNumber() != null && creditAccount.getNumber() != null){
-            Transaction debitTransaction = new Transaction(TransactionType.DEBIT, amount, description, LocalDate.now());
+            Transaction debitTransaction = new Transaction(TransactionType.DEBIT, amount, description, LocalDate.now(),(debitAccountBalance-amount));
             debitAccount.addTransaction(debitTransaction);
             transactionService.save(debitTransaction);
             debitAccount.setBalance(debitAccount.getBalance() - amount);
+            System.out.println(debitAccountBalance - amount);
             accountService.saveAccount(debitAccount);
 
-            Transaction creditTransaction = new Transaction(TransactionType.CREDIT, amount, description,LocalDate.now());
+            Transaction creditTransaction = new Transaction(TransactionType.CREDIT, amount, description,LocalDate.now(), (creditAccountBalance + amount));
             creditAccount.addTransaction(creditTransaction);
             transactionService.save(creditTransaction);
             creditAccount.setBalance(creditAccount.getBalance() + amount);

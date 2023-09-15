@@ -15,6 +15,8 @@ public class AccountDTO {
     private LocalDate creationDate;
     private double balance;
 
+    private boolean activeAccount;
+
     private Set<TransactionDTO> transactions = new HashSet<>();
 
 
@@ -44,6 +46,10 @@ public class AccountDTO {
 
     public double getBalance() {
         return balance;
+    }
+
+    public boolean isActiveAccount() {
+        return activeAccount;
     }
 
     public Set<TransactionDTO> getTransactions() {

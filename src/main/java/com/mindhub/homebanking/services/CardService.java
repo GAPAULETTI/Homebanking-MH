@@ -17,6 +17,5 @@ public interface CardService {
     Set<CardDTO> getCards(Authentication authentication);
 
     Card findByCardNumber(String cardNumber);
-
-    Card deleteCard(Long id);
 }
+

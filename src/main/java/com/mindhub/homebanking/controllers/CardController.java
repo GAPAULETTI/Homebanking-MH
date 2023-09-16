@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.controllers;
 
+import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.CardColor;
 import com.mindhub.homebanking.models.CardType;
@@ -31,7 +32,7 @@ public class CardController {
     @Autowired
     private ClientService clientService;
 
-    @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
+    @PostMapping("/clients/current/cards")
     public ResponseEntity<Object> createCard(@RequestParam @NotNull CardType cardType, @RequestParam @NotNull CardColor cardColor,
                                              Authentication authentication) {
 
@@ -55,20 +56,35 @@ public class CardController {
             return new ResponseEntity<>("This account number exists", HttpStatus.FORBIDDEN);
         } else {
             Card newCard = new Card(cardHolder(currentClient.getFirstName(), currentClient.getLastName()), cardType, cardColor,
-                    numberCard, cvvNumber(), LocalDate.now(), LocalDate.now().plusYears(5));
-            currentClient.addCard(newCard);
+                    numberCard, cvvNumber(), LocalDate.now(), LocalDate.now().plusYears(5), true);
+            newCard.setClient(currentClient);
             cardService.saveCard(newCard);
+            currentClient.addCard(newCard);
             clientService.saveClient(currentClient);
             return new ResponseEntity<>("A new card was created successfully", HttpStatus.CREATED);
         }
     }
 
-    @DeleteMapping("/clients/current/cards/{id}")
-    public ResponseEntity<Object> deleteCard(Authentication authentication, @PathVariable Long id) {
-        Client currentClient = clientService.getByAuth(authentication);
-        cardRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
+    @PatchMapping("/clients/current/cards")
+    public ResponseEntity<Object> deleteCard(@RequestParam String cardNumber, Authentication authentication){
+
+        if(cardNumber != null) {
+            Client currentClient = clientService.getByAuth(authentication);
+
+            Card card = cardService.findByCardNumber(cardNumber);
+            card.setActive(false);
+
+            cardService.saveCard(card);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Parameter null", HttpStatus.FORBIDDEN);
+    }
+    @GetMapping("/clients/current/cards")
+    public Set<CardDTO> getCardDTO(Authentication authentication){
+        Client currentClient = clientService.getByAuth(authentication);
+        Set<Card> cards = currentClient.getCards();
+        return cards.stream().map(CardDTO::new).collect(Collectors.toSet());
+    }
 
 }

@@ -51,22 +51,22 @@ public class AccountController {
 
         }
         @GetMapping("/clients/current/accounts")
-        public Set<AccountDTO> getCurrentAccount(Authentication authentication){
-              return accountService.getCurrentAccount(authentication)  ;
+        public Set<AccountDTO> getCurrentAccount(Authentication authentication) {
+                return accountService.getCurrentAccount(authentication);
         }
 
         @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
         public ResponseEntity<Object> accountRegister (Authentication authentication ) {
 
                 Client currentClient = clientService.getByAuth(authentication);
-
+                List<Account> activeAccounts = currentClient.getAccounts().stream().filter(account -> account.isActiveAccount()==true).collect(toList());
                 String numberAccount = generateNumberAccount();
                 if(accountService.getAccountByNumber(numberAccount) != null){
                       return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
                 }
-                if (currentClient.getAccounts().size() < 3) {
+                if (activeAccounts.size() < 3) {
 
-                        Account account = new Account(numberAccount, LocalDate.now(),0.0);
+                        Account account = new Account(numberAccount, LocalDate.now(),0.0, true);
                         accountService.saveAccount(account);
                         currentClient.addAccount(account);
 
@@ -76,6 +76,31 @@ public class AccountController {
               } else {
                       return new ResponseEntity<>("The maximum account number has been reached.",HttpStatus.FORBIDDEN);}
 
+        }
+
+
+        @PatchMapping("/clients/current/accounts")
+        public ResponseEntity<Object> deleteAccount(@RequestParam String accountNumber, Authentication authentication){
+
+                Client currentClient = clientService.getByAuth(authentication);
+                Account accountToDelete = accountService.getAccountByNumber(accountNumber);
+                List<Account> activeAccounts = currentClient.getAccounts().stream().filter(account -> account.isActiveAccount()==true).collect(toList());
+                int activeAccount = activeAccounts.size();
+
+                if(activeAccount == 1){
+                        return new ResponseEntity<>("This account cannot be deleted", HttpStatus.FORBIDDEN);
+                }
+                if(accountToDelete.getBalance() > 0){
+                        return new ResponseEntity<>("Accounts with available funds cannot be deleted", HttpStatus.FORBIDDEN);
+                }
+                if(accountNumber != null ){
+                        accountToDelete.setActiveAccount(false);
+                        accountService.saveAccount(accountToDelete);
+                        clientService.saveClient(currentClient);
+
+                   return new ResponseEntity<>("The account is banished", HttpStatus.OK);
+                }
+                return new ResponseEntity<>("This account cannot be deleted", HttpStatus.FORBIDDEN);
         }
 
 }

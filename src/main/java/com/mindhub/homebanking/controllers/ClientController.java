@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.mindhub.homebanking.Utils.Util.generateNumberAccount;
 import static java.util.stream.Collectors.toList;
@@ -48,7 +49,9 @@ public class ClientController {
     }
     @GetMapping("/clients/current")
     public ClientDTO getByAuth(Authentication authentication){
+
         return new ClientDTO(clientService.getByAuth(authentication));
+
     }
     @PostMapping("/clients")
     public ResponseEntity<Object> register(
@@ -69,7 +72,7 @@ public class ClientController {
            return new ResponseEntity<>("This account number already exists", HttpStatus.FORBIDDEN);
         }
         Client newClient = new Client(firstName,lastName,email, passwordEncoder.encode(password));
-        Account account = new Account(generateNumberAccount(), LocalDate.now(), 0.0);
+        Account account = new Account(generateNumberAccount(), LocalDate.now(), 0.0, true);
         accountService.saveAccount(account);
         newClient.addAccount(account);
         clientService.saveClient(newClient);

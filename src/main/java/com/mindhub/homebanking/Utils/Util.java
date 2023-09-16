@@ -4,10 +4,15 @@ package com.mindhub.homebanking.Utils;
 import com.mindhub.homebanking.models.Loan;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class Util {
+public final class Util {
 
 
-
+    public static double updateDebitBalance(double a, double b){
+        return a - b;
+    }
+    public static double updateCreditBalance(double a, double b){
+        return a + b;
+    }
     public static String generateNumberAccount(){
         String prefix = "VIN-";
         int number = (int)(10000000 + (Math.random()*89999999));
@@ -23,6 +28,7 @@ public class Util {
         int num4 = (int) (1000 + (Math.random()*8999));
         return num1 + " " + num2 + " " + num3 + " " + num4;
     }
+
     public static int cvvNumber(){
         return (int)(100 + (Math.random()*999));
     }

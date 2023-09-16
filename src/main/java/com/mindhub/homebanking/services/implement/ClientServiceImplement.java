@@ -41,6 +41,7 @@ public class ClientServiceImplement implements ClientService {
 
     @Override
     public Client getByAuth(Authentication authentication){
+
         return clientRepository.findByEmail(authentication.getName());
 
     }

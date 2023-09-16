@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.mindhub.homebanking.Utils.Util.generateNumberAccount;
 import static java.util.stream.Collectors.toList;
@@ -48,7 +49,9 @@ public class ClientController {
     }
     @GetMapping("/clients/current")
     public ClientDTO getByAuth(Authentication authentication){
+
         return new ClientDTO(clientService.getByAuth(authentication));
+
     }
     @PostMapping("/clients")
     public ResponseEntity<Object> register(

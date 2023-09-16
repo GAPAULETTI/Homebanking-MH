@@ -54,7 +54,7 @@ public class AccountServiceImplement implements AccountService {
     @Override
     public Set<AccountDTO> getCurrentAccount(Authentication authentication) {
         Client clientCurrent = clientRepository.findByEmail(authentication.getName());
-        Set<Account> accounts = clientCurrent.getAccounts();
+        Set<Account> accounts = clientCurrent.getAccounts().stream().filter(account -> account.isActiveAccount()==true).collect(Collectors.toSet());
         return accounts.stream().map(AccountDTO::new).collect(Collectors.toSet());
     }
 

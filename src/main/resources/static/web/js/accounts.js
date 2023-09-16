@@ -2,7 +2,6 @@ Vue.createApp({
     data() {
         return {
             clientInfo: {},
-            selectedAccount: [],
             errorToats: null,
             errorMsg: null,
         }
@@ -12,6 +11,7 @@ Vue.createApp({
             axios.get("/api/clients/current")
                 .then((response) => {
                     //get client ifo
+                    console.log(response)
                     this.clientInfo = response.data;
 
                     console.log(this.clientInfo)
@@ -33,32 +33,22 @@ Vue.createApp({
                     this.errorToats.show();
                 })
         },
-        deleteAccount: function(){
-            Swal.fire({
-              title: 'Are you sure?',
-              text: "You won't be able to revert this!",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                axios.patch(`/api/clients/current/accounts?accountNumber=${this.selectedAccount}`)
-                .then(response =>{
-                Swal.fire(
-                          'Deleted!',
-                          'Your file has been deleted.',
-                          'success'
-                    )
+        deleteAccount: function(numberAccount){
+                //axios.patch("/api/clients/current/accounts?", `accountNumber=${this.numberAccount}`)
+                axios.patch(`/api/clients/current/accounts?accountNumber=${numberAccount}`)
+                .then( response =>{
+                this.modal.show();
                 })
-              }
-            })
-            .catch((error) => {
-                                this.errorMsg = error.response.data;
-                                this.errorToats.show();
-                            })
+                 .catch((error) => {
+                    console.log(error);
+                    this.errorMsg = error.response.data;
+                    this.errorToats.show();
+                })
 
+
+        },
+        finish: function () {
+                            window.location.reload();
         },
         create: function () {
             axios.post('/api/clients/current/accounts')
@@ -71,6 +61,7 @@ Vue.createApp({
     },
     mounted: function () {
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));
+        this.modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         this.getData();
     }
 }).mount('#app')

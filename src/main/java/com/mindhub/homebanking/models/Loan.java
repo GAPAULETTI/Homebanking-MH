@@ -36,7 +36,7 @@ public class Loan {
     public Loan() {
     }
 
-    public Loan(String name, double maxAmount, List<Integer> payments) {
+    public Loan( String name, double maxAmount, List<Integer> payments) {
         this.name = name;
         this.maxAmount = maxAmount;
         this.payments = payments;

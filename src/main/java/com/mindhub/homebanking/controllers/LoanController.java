@@ -60,25 +60,26 @@ public class LoanController {
         }
         if(loanApplicationDTO.getAmount() > requestedLoan.getMaxAmount()){return new ResponseEntity<>("This amount exceeds the maximum available",HttpStatus.FORBIDDEN);}
 
-        if(currentClient.getAccounts().equals(toAccountNumber) == true){
-            return new ResponseEntity<>("This account is not associated with an authorized client", HttpStatus.FORBIDDEN);
+        if(currentClient.getAccounts().contains(toAccountNumber) == true) {
+
+            double accountBalance = toAccountNumber.getBalance();
+            double loanAmount = loanApplicationDTO.getAmount() + (loanApplicationDTO.getAmount() * 0.2);
+
+            ClientLoan creditLoan = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
+            clientLoanRepository.save(creditLoan);
+            currentClient.addLoan(creditLoan);
+            requestedLoan.addLoan(creditLoan);
+
+            Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, loanAmount, (requestedLoan.getName() + " <<loan approved>> "), LocalDate.now(), Util.updateCreditBalance(accountBalance, loanAmount));
+            toAccountNumber.addTransaction(accreditedLoan);
+            transactionService.save(accreditedLoan);
+            toAccountNumber.setBalance(accountBalance + loanAmount);
+            accountService.saveAccount(toAccountNumber);
+            //clientService.saveClient(currentClient);
+
+            return new ResponseEntity<>("Loan created successfully", HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>("This account does not belong to the current client", HttpStatus.FORBIDDEN);
         }
-
-        double accountBalance = toAccountNumber.getBalance();
-        double loanAmount = loanApplicationDTO.getAmount()+(loanApplicationDTO.getAmount()*0.2);
-
-        ClientLoan creditLoan = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
-        clientLoanRepository.save(creditLoan);
-        currentClient.addLoan(creditLoan);
-        requestedLoan.addLoan(creditLoan);
-
-        Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, loanAmount , (requestedLoan.getName() + " <<loan approved>> "), LocalDate.now(), Util.updateCreditBalance(accountBalance, loanAmount ));
-        toAccountNumber.addTransaction(accreditedLoan);
-        transactionService.save(accreditedLoan);
-        toAccountNumber.setBalance(accountBalance + loanAmount);
-        accountService.saveAccount(toAccountNumber);
-        //clientService.saveClient(currentClient);
-
-        return new ResponseEntity<>("Loan created successfully", HttpStatus.CREATED);
     }
 }

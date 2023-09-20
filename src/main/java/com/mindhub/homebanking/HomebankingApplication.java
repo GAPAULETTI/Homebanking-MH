@@ -31,8 +31,8 @@ public class HomebankingApplication {
 
 
 		return (args -> {
+	/*
 
-/*
 			Client client1 = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("12345"));
 			Client client2 = new Client("Bruno", "Diaz","batmanpanzon@hero.com", passwordEncoder.encode("12345"));
 			Client admin = new Client("admin", "admin", "admin@admin.com", passwordEncoder.encode("123456"));
@@ -60,10 +60,12 @@ public class HomebankingApplication {
 
 			Transaction transaction1 = new Transaction(TransactionType.CREDIT, 3500, "Reintegro Mastercard", LocalDate.now(), Util.updateCreditBalance(5000,3500));
 			Transaction transaction2 = new Transaction(TransactionType.DEBIT, 3000,"Compra NYC",LocalDate.now(), Util.updateDebitBalance(7500,3000));
+
 			Transaction transaction3 = new Transaction(TransactionType.DEBIT, 3500, "MovEntreCtas", LocalDate.now(), Util.updateDebitBalance(8500,3500));
 			account1.addTransaction(transaction1);
 			account2.addTransaction(transaction2);
 			account1.addTransaction(transaction3);
+			account2.setBalance(7500 - 3000);
 
 			transactionRepository.save(transaction1);
 			transactionRepository.save(transaction2);
@@ -112,7 +114,9 @@ public class HomebankingApplication {
 			clientRepository.save(client1);
 			clientRepository.save(client2);
 
-*/
+
+
+	 */
 
 		});
 	}

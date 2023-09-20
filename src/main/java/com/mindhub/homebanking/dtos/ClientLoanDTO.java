@@ -23,20 +23,19 @@ public class ClientLoanDTO {
     public ClientLoanDTO() {
     }
 
-    public ClientLoanDTO(double amount, int payments) {
-        this.amount = amount;
-        this.payments = payments;
-    }
-
     public ClientLoanDTO(ClientLoan clientLoan){
         this.id = clientLoan.getId();
+        this.loanName = clientLoan.getLoan().getName();
         this.amount = clientLoan.getAmount();
         this.payments = clientLoan.getPayments();
-        this.loanName = clientLoan.getLoan().getName();
     }
 
     public long getId() {
         return id;
+    }
+
+    public String getLoanName() {
+        return loanName;
     }
 
     public double getAmount() {

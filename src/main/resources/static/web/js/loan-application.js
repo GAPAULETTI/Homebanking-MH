@@ -10,6 +10,7 @@ Vue.createApp({
             errorMsg: null,
             accountToNumber: "VIN",
             amount: 0,
+            interestLoan: 0,
             fees: []
         }
     },
@@ -17,9 +18,10 @@ Vue.createApp({
         getData: function () {
             Promise.all([axios.get("/api/loans"), axios.get("/api/clients/current/accounts")])
                 .then((response) => {
-                    //get loan types ifo
+                    //get loan types info
                     this.loanTypes = response[0].data;
                     this.clientAccounts = response[1].data;
+                    console.log(this.loanTypes)
                 })
                 .catch((error) => {
                     this.errorMsg = "Error getting data";
@@ -68,7 +70,7 @@ Vue.createApp({
         },
         checkFees: function () {
             this.fees = [];
-            this.totalLoan = parseInt(this.amount) + (this.amount * 0.2);
+            this.totalLoan = parseInt(this.amount) + (this.amount * (this.interestLoan/100);
             let amount = this.totalLoan / this.payments;
             for (let i = 1; i <= this.payments; i++) {
                 this.fees.push({ amount: amount });

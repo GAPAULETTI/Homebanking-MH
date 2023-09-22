@@ -1,6 +1,7 @@
 package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.Utils.Util;
+import com.mindhub.homebanking.dtos.ClientLoanDTO;
 import com.mindhub.homebanking.dtos.LoanApplicationDTO;
 import com.mindhub.homebanking.dtos.LoanDTO;
 import com.mindhub.homebanking.models.*;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,10 +45,21 @@ public class LoanController {
     public Set<LoanDTO> getLoans(){
             return loanService.getLoansDTO();
     }
+
+    @GetMapping("/loans/{id}")
+    public LoanDTO getLoanById(@PathVariable Long id){
+        return loanService.getLoanDTO(id);
+    }
+    @GetMapping("/clients/current/loans")
+    public Set<ClientLoanDTO> getCurrentLoans(Authentication authentication){
+        Client currentClient = clientService.getByAuth(authentication);
+        return currentClient.getClientLoans().stream().map(clientLoan -> new ClientLoanDTO(clientLoan)).collect(Collectors.toSet());
+    }
+
     @Transactional
     @PostMapping("/loans")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplicationDTO loanApplicationDTO,
-                                             Authentication authentication, Loan loan) {
+                                             Authentication authentication) {
 
         Client currentClient = clientService.getByAuth(authentication);
         Account toAccountNumber = accountService.getAccountByNumber(loanApplicationDTO.getToAccountNumber());
@@ -62,18 +75,31 @@ public class LoanController {
 
         if(currentClient.getAccounts().contains(toAccountNumber) == true) {
 
-            double accountBalance = toAccountNumber.getBalance();
-            double loanAmount = loanApplicationDTO.getAmount() + (loanApplicationDTO.getAmount() * 0.2);
+            int payments = loanApplicationDTO.getPayments();
+            double interestLoan = requestedLoan.getInterestLoan();
+            double amount = loanApplicationDTO.getAmount();
 
-            ClientLoan creditLoan = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
+
+
+            double paymentAmount = Util.calculateInterest(payments, interestLoan,amount);
+            //df.format(paymentAmount);
+            //double feeAmount = Double.parseDouble((df.format(paymentAmount)));
+
+
+            double accountBalance = toAccountNumber.getBalance();
+            double totalLoan = loanApplicationDTO.getAmount() + Util.calculateInterest(payments, interestLoan,amount);
+            System.out.println(totalLoan);
+
+            ClientLoan creditLoan = new ClientLoan(requestedLoan.getName(),loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments(),
+                    interestLoan, paymentAmount, totalLoan, LocalDate.now().plusMonths(1));
             clientLoanRepository.save(creditLoan);
             currentClient.addLoan(creditLoan);
             requestedLoan.addLoan(creditLoan);
 
-            Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, loanAmount, (requestedLoan.getName() + " <<loan approved>> "), LocalDate.now(), Util.updateCreditBalance(accountBalance, loanAmount));
+            Transaction accreditedLoan = new Transaction(TransactionType.CREDIT, amount, (requestedLoan.getName() + " <<loan approved>> "), LocalDate.now(), Util.updateCreditBalance(accountBalance, amount));
             toAccountNumber.addTransaction(accreditedLoan);
             transactionService.save(accreditedLoan);
-            toAccountNumber.setBalance(accountBalance + loanAmount);
+            toAccountNumber.setBalance(accountBalance + amount);
             accountService.saveAccount(toAccountNumber);
             //clientService.saveClient(currentClient);
 

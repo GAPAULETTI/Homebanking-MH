@@ -41,6 +41,15 @@
 .credit-transaction {
     color: green;
 }
+.card-body {
+    text-decoration: none;
+}
+.loan-link {
+    text-decoration: none;
+}
+.card-title{
+    text-decoration: none;
+}
 
 .debit-transaction {
     color: red;

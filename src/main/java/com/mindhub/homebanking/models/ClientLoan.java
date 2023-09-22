@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,16 @@ public class ClientLoan {
     private double amount;
     private int payments;
 
+    private double interest; // interes por cuota
+
+    private double paymentAmount; //valor de la cuota
+
+    private LocalDate expirationDate;
+
+    private double totalLoan;
+
+
+
     //Client Relationship
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
@@ -33,9 +44,21 @@ public class ClientLoan {
     public ClientLoan() {
     }
 
+
     public ClientLoan(double amount, int payments){
         this.amount = amount;
         this.payments = payments;
+
+    }
+
+    public ClientLoan(String name, double amount, int payments, double interest, double paymentAmount,double totalLoan, LocalDate expirationDate) {
+        this.name = name;
+        this.amount = amount;
+        this.payments = payments;
+        this.interest = interest;
+        this.paymentAmount = paymentAmount;
+        this.totalLoan = totalLoan;
+        this.expirationDate = expirationDate;
     }
 
     public long getId() {
@@ -66,6 +89,13 @@ public class ClientLoan {
         this.payments = payments;
     }
 
+    public double getTotalLoan() {
+        return totalLoan;
+    }
+
+    public void setTotalLoan(double totalLoan) {
+        this.totalLoan = totalLoan;
+    }
 
     @JsonIgnore
     public Client getClient() {
@@ -84,5 +114,27 @@ public class ClientLoan {
         this.loan = loan;
     }
 
+    public double getInterest() {
+        return interest;
+    }
 
+    public void setInterest(double interest) {
+        this.interest = interest;
+    }
+
+    public double getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public void setPaymentAmount(double paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }

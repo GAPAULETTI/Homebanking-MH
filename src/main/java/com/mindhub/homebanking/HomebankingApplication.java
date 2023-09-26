@@ -37,10 +37,10 @@ public class HomebankingApplication {
 			Client client2 = new Client("Bruno", "Diaz","batmanpanzon@hero.com", passwordEncoder.encode("12345"));
 			Client admin = new Client("admin", "admin", "admin@admin.com", passwordEncoder.encode("123456"));
 
-			Account account1 = new Account("VIN001", LocalDate.now(), 5000, true);
-			Account account2 = new Account("VIN002", LocalDate.now().plusDays(1), 7500,true);
-			Account account3 = new Account("VIN003", LocalDate.now(), 3000,true);
-			Account account4 = new Account("VIN004", LocalDate.now().minusWeeks(1), 9500,true);
+			Account account1 = new Account("VIN001",AccountType.CURRENT, LocalDate.now(), 5000, true);
+			Account account2 = new Account("VIN002",AccountType.SAVING, LocalDate.now().plusDays(1), 7500,true);
+			Account account3 = new Account("VIN003",AccountType.CURRENT, LocalDate.now(), 3000,true);
+			Account account4 = new Account("VIN004",AccountType.SAVING, LocalDate.now().minusWeeks(1), 9500,true);
 
 			clientRepository.save(client1);
 			clientRepository.save(client2);
@@ -60,10 +60,12 @@ public class HomebankingApplication {
 
 			Transaction transaction1 = new Transaction(TransactionType.CREDIT, 3500, "Reintegro Mastercard", LocalDate.now(), Util.updateCreditBalance(5000,3500));
 			Transaction transaction2 = new Transaction(TransactionType.DEBIT, 3000,"Compra NYC",LocalDate.now(), Util.updateDebitBalance(7500,3000));
+
 			Transaction transaction3 = new Transaction(TransactionType.DEBIT, 3500, "MovEntreCtas", LocalDate.now(), Util.updateDebitBalance(8500,3500));
 			account1.addTransaction(transaction1);
 			account2.addTransaction(transaction2);
 			account1.addTransaction(transaction3);
+			account2.setBalance(7500 - 3000);
 
 			transactionRepository.save(transaction1);
 			transactionRepository.save(transaction2);
@@ -72,9 +74,9 @@ public class HomebankingApplication {
 			accountRepository.save(account1);
 			accountRepository.save(account2);
 
-			Loan hipotecario = new Loan("Hipotecario", 500000, List.of(12,24,36,48,60));
-			Loan personal = new Loan("Personal", 100000, List.of(6,12,24));
-			Loan automotriz = new Loan("Automotriz", 300000, List.of(6,12,24,36));
+			Loan hipotecario = new Loan("Hipotecario", 500000, List.of(12,24,36,48,60),80);
+			Loan personal = new Loan("Personal", 100000, List.of(6,12,24),60);
+			Loan automotriz = new Loan("Automotriz", 300000, List.of(6,12,24,36),75);
 
 			loanRepository.save(hipotecario);
 			loanRepository.save(personal);
@@ -112,7 +114,9 @@ public class HomebankingApplication {
 			clientRepository.save(client1);
 			clientRepository.save(client2);
 
-*/
+
+ */
+
 
 		});
 	}

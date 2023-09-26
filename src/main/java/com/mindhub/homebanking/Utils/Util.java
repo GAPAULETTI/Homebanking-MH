@@ -4,6 +4,8 @@ package com.mindhub.homebanking.Utils;
 import com.mindhub.homebanking.models.Loan;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DecimalFormat;
+
 public final class Util {
 
 
@@ -36,5 +38,12 @@ public final class Util {
     public static String cardHolder(String firstName, String lastName){
         return firstName + " " + lastName;
     }
+
+    public static double calculateInterest(int payments,double rate,double amount){
+        double calcIntPerDay = ((rate / 100)/360)*amount;
+        return calcIntPerDay*(30*payments);
+    }
+
+
 
 }

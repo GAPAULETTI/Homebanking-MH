@@ -2,6 +2,7 @@ Vue.createApp({
     data() {
         return {
             clientInfo: {},
+            selectedAccount: [],
             errorToats: null,
             errorMsg: null,
         }
@@ -10,11 +11,13 @@ Vue.createApp({
         getData: function () {
             axios.get("/api/clients/current")
                 .then((response) => {
-                    //get client ifo
-                    console.log(response)
+                    //get client info
                     this.clientInfo = response.data;
-
                     console.log(this.clientInfo)
+                    console.log(this.clientInfo.accountsDTO)
+                    this.selectAccount = this.clientInfo.accountsDTO.map(account => account.accountType)
+
+
                 })
                 .catch((error) => {
                     // handle error
@@ -51,17 +54,24 @@ Vue.createApp({
                             window.location.reload();
         },
         create: function () {
-            axios.post('/api/clients/current/accounts')
-                .then(response => window.location.reload())
+            axios.post(`/api/clients/current/accounts?accountType=${this.selectedAccount}`)
+                .then(response => {
+                this.createModal.hide();
+                window.location.reload();
+                })
                 .catch((error) => {
                     this.errorMsg = error.response.data;
                     this.errorToats.show();
                 })
-        }
+        },
+         createAccount: function(){
+                    this.createModal.show();
+         },
     },
     mounted: function () {
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));
         this.modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        this.createModal = new bootstrap.Modal(document.getElementById('selectAccountType'));
         this.getData();
     }
 }).mount('#app')

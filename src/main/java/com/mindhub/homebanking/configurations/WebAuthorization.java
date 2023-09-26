@@ -29,15 +29,18 @@ public class WebAuthorization {
                 .antMatchers( HttpMethod.POST,"/api/login", "/api/logout").permitAll()
                 .antMatchers("/manager.html", "/rest/**").hasAuthority("ADMIN")
                 .antMatchers("h2-console").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/accounts").hasAuthority("ADMIN")
+
+
                 .antMatchers(HttpMethod.POST,"/api/clients").permitAll()
                 .antMatchers("/api/clients/current").hasAuthority("CLIENT")
                 .antMatchers("/api/clients/accounts/**").hasAuthority("CLIENT")
                 .antMatchers("/api/accounts/**").hasAuthority("CLIENT")
                 .antMatchers(HttpMethod.POST,"/api/transactions").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.POST, "/api/loans").hasAuthority("CLIENT")
-                .antMatchers( "/api/loans").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.POST, "/api/loans").hasAnyAuthority("CLIENT","ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/loans").hasAnyAuthority("CLIENT","ADMIN")
+                .antMatchers( "/api/loans").hasAnyAuthority("CLIENT","ADMIN")
                 .antMatchers( "/api/clients/current/accounts").hasAuthority("CLIENT")
+                .antMatchers( "/api/clients/current/loans").hasAuthority("CLIENT")
                 .antMatchers(HttpMethod.POST,"/api/clients/current/accounts").hasAuthority("CLIENT")
                 .antMatchers(HttpMethod.PATCH,"/api/clients/current/accounts").hasAuthority("CLIENT")
                 .antMatchers(HttpMethod.PATCH,"/api/clients/current/accounts/*").hasAuthority("CLIENT")
@@ -46,6 +49,16 @@ public class WebAuthorization {
                 .antMatchers(HttpMethod.PATCH,"/api/clients/current/cards").hasAuthority("CLIENT")
                 .antMatchers(HttpMethod.PATCH,"/api/clients/current").hasAuthority("CLIENT")
                 .antMatchers(HttpMethod.GET,"/api/clients/current").hasAuthority("CLIENT")
+
+                .antMatchers(HttpMethod.GET,"/api/admin/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST,"/api/admin/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/accounts").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/web/admin/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, "/web/admin/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/web/admin/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ADMIN")
                 .antMatchers( "/api/**").hasAuthority("ADMIN");
 
                        // .anyRequest().authenticated();

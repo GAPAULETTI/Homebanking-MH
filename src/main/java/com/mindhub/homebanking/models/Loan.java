@@ -22,6 +22,8 @@ public class Loan {
     private String name;
     private double maxAmount;
 
+    private double interestLoan;
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> payments;
@@ -36,10 +38,11 @@ public class Loan {
     public Loan() {
     }
 
-    public Loan(String name, double maxAmount, List<Integer> payments) {
+    public Loan( String name, double maxAmount, List<Integer> payments, double interestLoan) {
         this.name = name;
         this.maxAmount = maxAmount;
         this.payments = payments;
+        this.interestLoan = interestLoan;
     }
 
     public long getId() {
@@ -69,6 +72,14 @@ public class Loan {
 
     public void setPayments(List<Integer> payments) {
         this.payments = payments;
+    }
+
+    public double getInterestLoan() {
+        return interestLoan;
+    }
+
+    public void setInterestLoan(double interestLoan) {
+        this.interestLoan = interestLoan;
     }
 
     public Set<ClientLoan> getClientLoans() {

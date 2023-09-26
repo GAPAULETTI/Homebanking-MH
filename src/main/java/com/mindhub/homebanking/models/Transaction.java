@@ -21,8 +21,6 @@ public class Transaction {
     private double balance;
 
 
-
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "account_number")
     private Account account;

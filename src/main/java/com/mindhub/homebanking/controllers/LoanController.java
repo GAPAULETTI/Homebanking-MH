@@ -11,15 +11,18 @@ import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.ClientService;
 import com.mindhub.homebanking.services.LoanService;
 import com.mindhub.homebanking.services.TransactionService;
+import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,15 @@ public class LoanController {
     public Set<ClientLoanDTO> getCurrentLoans(Authentication authentication){
         Client currentClient = clientService.getByAuth(authentication);
         return currentClient.getClientLoans().stream().map(clientLoan -> new ClientLoanDTO(clientLoan)).collect(Collectors.toSet());
+    }
+
+    @PutMapping("/loans")
+    public ResponseEntity<Object> createNewLoan(@RequestParam String name, @RequestParam double maxAmount,
+                                                @RequestParam List<Integer> payments, @RequestParam double interestLoan){
+        Loan newLoan = new Loan(name, maxAmount, List.of(6,12), interestLoan);
+
+        loanRepository.save(newLoan);
+        return new ResponseEntity<>("Loan created successfully", HttpStatus.CREATED);
     }
 
     @Transactional

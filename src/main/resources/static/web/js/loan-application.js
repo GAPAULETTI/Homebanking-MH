@@ -70,7 +70,7 @@ Vue.createApp({
         },
         checkFees: function () {
             this.fees = [];
-            this.totalLoan = parseInt(this.amount) + (this.amount * (this.interestLoan/100);
+            this.totalLoan = parseInt(this.amount) + (this.amount * (this.interestLoan/100));
             let amount = this.totalLoan / this.payments;
             for (let i = 1; i <= this.payments; i++) {
                 this.fees.push({ amount: amount });

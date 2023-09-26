@@ -4,6 +4,8 @@ import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.dtos.ClientDTO;
 import com.mindhub.homebanking.dtos.ClientLoanDTO;
 import com.mindhub.homebanking.models.Account;
+import com.mindhub.homebanking.models.AccountType;
+import com.mindhub.homebanking.models.CardType;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
@@ -56,7 +58,7 @@ public class AccountController {
         }
 
         @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
-        public ResponseEntity<Object> accountRegister (Authentication authentication ) {
+        public ResponseEntity<Object> accountRegister (Authentication authentication, @RequestParam AccountType accountType) {
 
                 Client currentClient = clientService.getByAuth(authentication);
                 List<Account> activeAccounts = currentClient.getAccounts().stream().filter(account -> account.isActiveAccount()==true).collect(toList());
@@ -66,7 +68,7 @@ public class AccountController {
                 }
                 if (activeAccounts.size() < 3) {
 
-                        Account account = new Account(numberAccount, LocalDate.now(),0.0, true);
+                        Account account = new Account(numberAccount, accountType ,LocalDate.now(), 0.0, true);
                         accountService.saveAccount(account);
                         currentClient.addAccount(account);
 

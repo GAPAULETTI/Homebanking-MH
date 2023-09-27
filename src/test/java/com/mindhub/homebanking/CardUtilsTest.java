@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class CardUtilsTest {
-    /*
+
     @Test
     public void cardNumberIsCreated(){
         String cardNumber = Util.generateNumberCard();
@@ -34,5 +34,5 @@ public class CardUtilsTest {
     }
 
 
-     */
+
 }

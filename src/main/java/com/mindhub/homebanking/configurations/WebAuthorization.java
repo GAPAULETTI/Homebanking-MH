@@ -27,6 +27,7 @@ public class WebAuthorization {
 
                 .antMatchers("/web/**").permitAll()
                 .antMatchers( HttpMethod.POST,"/api/login", "/api/logout").permitAll()
+                .antMatchers( HttpMethod.GET,"/api/login", "/api/logout").permitAll()
                 .antMatchers("/manager.html", "/rest/**").hasAuthority("ADMIN")
                 .antMatchers("h2-console").hasAuthority("ADMIN")
 

@@ -56,8 +56,8 @@ public class WebAuthorization {
                 .antMatchers(HttpMethod.GET, "/web/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.POST, "/web/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/web/admin/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/**").hasAuthority("ADMIN")
+                //.antMatchers(HttpMethod.GET, "/api/**").hasAuthority("ADMIN")
+                //.antMatchers(HttpMethod.POST, "/api/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ADMIN")
                 .antMatchers( "/api/**").hasAuthority("ADMIN");
 

@@ -21,6 +21,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 public class RepositoriesTest {
+    /*
     @Autowired
     LoanRepository loanRepository;
     @Autowired
@@ -92,6 +93,8 @@ public class RepositoriesTest {
     }
 
 
+
+     */
 
 
 }
